@@ -1,4 +1,5 @@
 # pyinstaller --onefile --windowed --icon=flag.ico --name Minesweeper minesweeper.py
+# pyinstaller --onefile --icon=flag.ico --name Minesweeper_Debug minesweeper.py
 
 from tkinter import *
 from tkinter import messagebox
