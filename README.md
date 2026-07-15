@@ -4,7 +4,7 @@ simple minesweeper game in python with tkinter
 the code is not perfect dont judge.  
 
 # How to use
-You should only need to download the executable dist/minesweeper.exe  
+To play you should only need to download the executable dist/minesweeper.exe (I hope it works)  
 If you want to modify the code, you can modify it in minesweeper.py and build it with the command 
 
 ```bash
