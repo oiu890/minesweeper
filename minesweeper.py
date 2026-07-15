@@ -30,6 +30,9 @@ class mineSweeper(Frame):
                 [0,-1],        [0,1],
                 [1,-1],[1,0],[1,1]
             ]
+        # top left: (r-1,c-1), top left: (r-1,c+1)
+        # bottom left: (r+1,c-1), bottom right: (r+1,c+1)
+
         for r in range(rows):
             temp = []
             for c in range(cols):
@@ -81,13 +84,8 @@ class mineSweeper(Frame):
                     return #its a flag, dont open it
                 
                 if self.mineFields[r][c][0]["state"] == DISABLED and self.mineFields[r][c][0]["text"] != "🚩":
-                    # self.mineFields[r][c][0].config(relief = RIDGE)
-                    # self.mineFields[r][c][0].update()  
+                    # tried to implement chording
                     self.check_mines(r,c)
-
-                    # self.mineFields[r][c][0].config(relief = SUNKEN)
-                    # its disabled (either flag or number) and its not a flag (its a number)
-                    # open surrounding
                     return
 
                 if self.mineFields[r][c][1] != -1: #safe
@@ -140,22 +138,23 @@ class mineSweeper(Frame):
 
         
         self.count += 1
+
         # if val isnt 0 then its a number and you should display
+        # recursion stops at a number as well
         if val != 0:
             button["text"] = str(val)
             return
 
         rows = self.rows
         cols = self.cols
-
+        #iterate a 3x3 grid around the cell
         for dr, dc in self.neighbours:
             nr = r + dr
             nc = c + dc
             if (nr < 0) or (nr >= rows) or (nc < 0) or (nc >= cols):
                 continue #out of valid range
-            if self.mineFields[nr][nc][1] != -1:
-                # self.mineFields[r][c][0]["text"] = self.mineFields[r][c][1]
-                # self.count += 1
+            
+            if self.mineFields[nr][nc][1] != -1: #recursively open if not a bomb
                 self.openSafePos(nr,nc)
          
     def check_mines(self,r,c):
@@ -216,7 +215,6 @@ class mineSweeper(Frame):
         # update the mineFields after mines are created
         # for example, self.mineFields[3][3][1] = 7
         # this means that the number of mines around the cell at (3,3) is 7
-
         # pass 
         rows = self.rows
         cols = self.cols
@@ -254,7 +252,7 @@ class mineSweeper(Frame):
 
     def restart(self):
         # root = self.winfo_toplevel()
-        self.destroy()
+        self.destroy() 
         # StartMenu(root)
         mineSweeper(self.rows,self.cols)
     
@@ -262,17 +260,13 @@ class mineSweeper(Frame):
         root = self.winfo_toplevel()
         self.destroy()
         StartMenu(root)
+        centerWindow(root)
 
     def check_win(self):
         if self.count == self.rows * self.cols - len(self.mines):
             messagebox.showinfo("GG", "WIN!")
 
-    # def display_all(self):
-    #     for r in range(self.rows):
-    #         for c in range(self.cols):
-    #             if self.mineFields[r][c][1] == -1:
-    #                 self.mineFields[r][c][0].config(state = DISABLED,text = "💣",relief = SUNKEN,bg = "OrangeRed2")
-    #                 # self.mineFields[r][c][0]
+
 
 
 class StartMenu:
@@ -310,10 +304,12 @@ class StartMenu:
         Button(root,text = "Quit",command=lambda: self.root.winfo_toplevel().destroy()).grid(row=6,column=0,columnspan = 2,sticky='ew')
 
     def start(self,r,c):
+        # just some input validation 
         try:
             r,c = int(r),int(c)
         except ValueError:
             messagebox.showerror("Invalid input","Please enter only numbers")
+
         if r *c > 2000: 
             messagebox.showerror(
                 "TOO LARGE :(","Max 2000 cells sorry"
@@ -321,16 +317,20 @@ class StartMenu:
             return
         if r< 5 or c< 5:
             messagebox.showerror("TOO SMALL :(","min 5x5 size")
+            return
         
         self.root.destroy() 
 
         game = Tk()
-        centerWindow(game)
+        # centerWindow(game)
         game.title("Minesweeper")
         mineSweeper(r,c)
+        centerWindow(game)
         
 
 def centerWindow(win):
+    # this is supposed to centre the window but it doesnt rlly work properly for some reason..?
+    # oh i fixed it HAHAHAH was calling it before mineSweeper initialised (wrong), should be called after
     win.update_idletasks()
     w = win.winfo_reqwidth()
     h = win.winfo_reqheight()
