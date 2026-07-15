@@ -17,3 +17,7 @@ Build it without `--windowed` for debugging with terminal.
 # Note
 `minesweeper_template.ipynb` was the original task by my teacher. The task was to implement `updateMineField`, `createMines` and `openSafePos`.  
 Good thing I am a minesweeper fan so I decided to continue it further 😎👍  
+
+# Current bugs
+large sizes are buggy  
+i dont know  

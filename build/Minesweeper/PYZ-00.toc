@@ -1,5 +1,4 @@
-('C:\\Stuff\\2025 J1 computing\\Revision - minesweeper\\Revision - minesweeper '
- '(2D + recursionn)\\build\\Minesweeper\\PYZ-00.pyz',
+('C:\\Stuff\\projects\\minesweeper\\build\\Minesweeper\\PYZ-00.pyz',
  [('__future__',
    'C:\\Users\\lucas\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\__future__.py',
    'PYMODULE'),

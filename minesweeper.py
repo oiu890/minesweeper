@@ -13,9 +13,17 @@ class mineSweeper(Frame):
         self.cols = cols
 
         # trying to scale it bigger
+        screenW = self.winfo_screenwidth()
+        screenH = self.winfo_screenheight()
         maxDim = max(rows, cols)
-        fontSize = max(8, min(16, 240 // maxDim))
+        availW = screenW * 0.9
+        availH = screenH * 0.8
+        pxPerCell = min(availW / cols, availH / rows)
+
+        fontSize = max(6, min(16, int(pxPerCell / 3)))
         self.cellFont = ("Arial", fontSize)
+        # fontSize = max(8, min(16, 240 // maxDim))
+        # self.cellFont = ("Arial", fontSize)
         print(fontSize)
         # so that my (self proclaimed) amazing clock detail can show
         topFontSize = 24
