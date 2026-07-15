@@ -4,12 +4,23 @@
 from tkinter import *
 from tkinter import messagebox
 from random import sample
+import time
 
 class mineSweeper(Frame):
     def __init__(self, rows, cols):
         Frame.__init__(self)
         self.rows = rows
         self.cols = cols
+
+        # trying to scale it bigger
+        maxDim = max(rows, cols)
+        fontSize = max(8, min(16, 240 // maxDim))
+        self.cellFont = ("Arial", fontSize)
+        print(fontSize)
+        # so that my (self proclaimed) amazing clock detail can show
+        topFontSize = 24
+        self.topFont = ("Arial", topFontSize)
+
         self.mineFields = []
         self.mines = []
         self.count = 0
@@ -36,7 +47,7 @@ class mineSweeper(Frame):
         for r in range(rows):
             temp = []
             for c in range(cols):
-                b = Button(self, height=1, width=2)
+                b = Button(self, height=1, width=2,font=self.cellFont)
                 if (r+c)%2 == 0:
                     # print(cols%2,r)
                     b.config(bg = "DarkOliveGreen2") #1,3,5 (even rows)
@@ -66,10 +77,20 @@ class mineSweeper(Frame):
         self.flagCount = 0
         self.flagVar = StringVar()
         self.flagVar.set(f"🚩 x{len(self.mines)}")
-        self.flagLabel = Label(self, textvariable=self.flagVar)
-        self.flagLabel.grid(row=0, column=0, columnspan=self.cols, sticky="ew")
+        self.flagLabel = Label(self, textvariable=self.flagVar,font = self.topFont)
+        self.flagLabel.grid(row=0, column=0, columnspan=self.cols//2, sticky="ew")
         # self.mainloop()
-        
+        # timer
+        self.clocks = ['🕛', '🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚']
+        self.startTime = 0
+        self.timerRunning = False
+        self.elapsed = 0
+        self.timeVar = StringVar()
+        self.timeVar.set("🕛 0")
+        self.curclock = 0
+        self.timerLabel = Label(self,textvariable=self.timeVar,font = self.topFont)
+        self.timerLabel.grid(row=0, column=self.cols//2,columnspan=self.cols - self.cols//2,sticky = "ew")
+
 
         
     def clickButton(self, r, c, clickType):
@@ -77,6 +98,9 @@ class mineSweeper(Frame):
         def helper(event):
             if self.gameOver:
                 return
+            if not self.timerRunning:
+                self.startTimer()
+
             print(clickType + " Click @ " + str(r) + ", " + str(c))
 
             if clickType == 'L':
@@ -93,7 +117,6 @@ class mineSweeper(Frame):
                 else:
                     self.game_over(r,c)
                     
-
             elif clickType == "R":
                 # print(self.mineFields[r][c][0]["state"])
                 # check if its a flag alr, check that its not a number??
@@ -238,6 +261,7 @@ class mineSweeper(Frame):
                 
                 # self.mineFields[nr][nc][1] +
     def game_over(self, r, c):
+        self.stopTimer()
         self.gameOver = True
         colour = "red"
         self.mineFields[r][c][0].config(text="💣", bg=colour)
@@ -249,6 +273,29 @@ class mineSweeper(Frame):
         
         messagebox.showinfo("GG", "Game Over")
         
+    def startTimer(self):
+        if not self.timerRunning:
+            self.timerRunning = True
+            self.startTime = time.time()
+            self.updateTimer()
+        
+    def updateTimer(self):
+        if self.timerRunning:
+            self.elapsed = int(time.time() - self.startTime)
+            clocks = self.clocks
+            self.curclock = self.curclock%12
+            # self.curclock += 1
+            print(self.curclock,'new update',self.elapsed)    
+                
+            self.timeVar.set(f"{clocks[self.curclock]} {self.elapsed}")
+            self.curclock += 1
+            self.after(1000,self.updateTimer)
+
+    def stopTimer(self):
+        self.elapsed = int(time.time() - self.startTime)
+        clocks = self.clocks
+        self.timeVar.set(f"{clocks[self.curclock]} {self.elapsed}")
+        self.timerRunning = False
 
     def restart(self):
         # root = self.winfo_toplevel()
@@ -264,7 +311,8 @@ class mineSweeper(Frame):
 
     def check_win(self):
         if self.count == self.rows * self.cols - len(self.mines):
-            messagebox.showinfo("GG", "WIN!")
+            self.stopTimer()
+            messagebox.showinfo("GG", f"WIN! Time: {self.elapsed}s")
 
 
 
