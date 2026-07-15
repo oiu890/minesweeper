@@ -12,7 +12,7 @@ pyinstaller --onefile --windowed --icon=flag.ico --name Minesweeper minesweeper.
 ```  
 
 Build it without `--windowed` for debugging with terminal.  
-`--onefile` flag bundle your Python script and all its dependencies into a standalone executable file, you can remove this if you want too.  
+`--onefile` flag bundles your Python script and all its dependencies into a standalone executable file, you can remove this if you want too.  
 
 # Note
 `minesweeper_template.ipynb` was the original task by my teacher. The task was to implement `updateMineField`, `createMines` and `openSafePos`.  
